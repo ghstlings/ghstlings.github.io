@@ -107,22 +107,25 @@
             transition: 
                 background-color 0.2s ease-in-out,
                 color 0.2s ease-in-out,
+                /* border-color 0.2s ease-in-out, */
                 transform 0.1s ease-in-out,
                 box-shadow 0.2s ease-in-out;
         }
 
         /* Hover effect */
         .input-area button:hover {
-            color: #fbb757;
-            background-color: white;
+            color: #d2953d !important; 
+            /* border-color: #fbb757 !important;  */
+            background-color: whitesmoke !important;
             transform: scale(1.05);
-            transition: transform 0.2s ease-in-out;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
+            transition: all 0.2s ease-in-out;
         }
 
         /* Click (active) effect */
         .input-area button:active {
             transform: scale(0.95); /* Press effect */
+            transform: 0.5s ease-in-out;
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15); /* Slightly pressed shadow */
         }
 
@@ -161,6 +164,7 @@
 
         .category-title:hover {
             color: #b5485d;
+            transition: color 0.2s ease-in-out;
         }
 
         /* Override alignment for the Wardrobe Box */
@@ -172,6 +176,7 @@
 
         .wwardrobe-box .category-header {
             justify-content: space-between;
+            align-items: center;
         }
 
         .wardrobe-box .wardrobe-buttons {
@@ -306,11 +311,12 @@
             color: #b5485d;
             position: relative;
             top: -4px;
-
         }
 
         .info-icon:hover {
             color: #ff5733;
+            transform: scale(1.1);
+            transition: transform 0.1s ease-in-out;
         }
 
         /* Modal Background */
