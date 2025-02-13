@@ -1,3 +1,10 @@
+// ✅ Reset only the import toggle states BEFORE initializing the UI
+(function resetImportModes() {
+    let keysToRemove = Object.keys(localStorage).filter(key => key.startsWith("importMode-"));
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+})();
+
+
 class ClothingType {
     static types = {
         HAIR: "发型",
@@ -40,6 +47,8 @@ class Category {
     }
 }
 
+
+
 class Wardrobe {
     // Loops through ClothingTypes in their natural order, and initializes a new Category for each ClothingType
     constructor() {
@@ -58,8 +67,10 @@ class Wardrobe {
     addClothingItems(type, itemsString) {
         if (!itemsString.trim()) return;
     
+        // Remove ALL leading "!" characters
         let isRemoval = itemsString.startsWith("!");
-        let cleanedInput = isRemoval ? itemsString.substring(1).trim() : itemsString;
+        let cleanedInput = isRemoval ? itemsString.replace(/^!+/, "").trim() : itemsString;
+
         let items = this.parseItems(cleanedInput);
     
         if (isRemoval) {
@@ -331,6 +342,68 @@ class Wardrobe {
             // Configure the input box and allows pressing Enter to import
             const input = categoryBox.querySelector("input");
             const importButton = categoryBox.querySelector("button");
+
+            let isRemove = false; // Tracks toggle state
+
+            // Handles directly clicking the Import button
+            // if (importButton) {
+            //     importButton.textContent = "Import"; // Default mode is "Import"
+
+            //     importButton.onclick = () => {
+            //         isRemove = !isRemove; // Toggle mode
+            //         let inputId = input.id;
+                    
+            //         if (isRemove){
+            //             importButton.textContent = "Remove";
+            //             importButton.style.color = "#b5485d";
+            //             importButton.style.borderColor = "#b5485d";
+            //         } else {
+            //             importButton.textContent = "Import";
+            //             importButton.style.color = "";
+            //             importButton.style.borderColor = "#9d8189";
+                        
+            //         }
+
+            //         setTimeout(() => { document.getElementById(inputId).focus(); }, 0);
+            //     };
+            // }
+
+            if (importButton) {
+                // Generate a unique key for each category in localStorage
+                let storageKey = `importMode-${type}`;
+                
+                // Retrieve the stored mode for this specific category, default to "import"
+                let storedState = localStorage.getItem(storageKey) || "import";
+                isRemove = storedState === "remove";
+            
+                importButton.textContent = isRemove ? "Remove" : "Import";
+                importButton.style.color = isRemove ? "#b5485d" : "";
+                importButton.style.borderColor = isRemove ? "#b5485d" : "#9d8189";
+            
+                importButton.onclick = () => {
+                    isRemove = !isRemove; // Toggle mode
+                    localStorage.setItem(storageKey, isRemove ? "remove" : "import"); // Save state for this category
+            
+                    let inputId = input.id;
+            
+                    if (isRemove) {
+                        importButton.textContent = "Remove";
+                        importButton.style.color = "#b5485d";
+                        importButton.style.borderColor = "#b5485d";
+                    } else {
+                        importButton.textContent = "Import";
+                        importButton.style.color = "";
+                        importButton.style.borderColor = "#9d8189";
+                    }
+            
+                    setTimeout(() => {
+                        let inputElement = document.getElementById(inputId);
+                        if (inputElement) inputElement.focus();
+                    }, 0);
+                };
+            }
+            
+
             if (input) {
                 input.id = `input-${type}`; // Assign unique ID per category
                 
@@ -338,30 +411,20 @@ class Wardrobe {
                 input.addEventListener("keydown", (event) => {
                     if (event.key === "Enter") {
                         event.preventDefault();
-                        this.addClothingItems(type, input.value);
+                        
+                        if (isRemove) {
+                            this.addClothingItems(type, "!" + input.value); // Remove items
+                        } else {
+                            this.addClothingItems(type, input.value); // Add items
+                        }
+
                         let inputId = input.id; // Store input field ID
                         input.value = ""; // Clear input field
     
                         // Restore focus after UI updates
-                        setTimeout(() => {
-                            document.getElementById(inputId).focus();
-                        }, 0);
+                        setTimeout(() => { document.getElementById(inputId).focus(); }, 0);
                     }
                 });
-            }
-            
-            // Handles directly clicking the Import button
-            if (importButton) {
-                importButton.onclick = () => {
-                    this.addClothingItems(type, input.value);
-                    let inputId = input.id; // Store input field ID
-                    input.value = ""; // Clear input field
-                    
-                    // Restore focus after UI updates
-                    setTimeout(() => {
-                        document.getElementById(inputId).focus();
-                    }, 0);
-                };
             }
         });
 

@@ -88,8 +88,42 @@
             margin-right: 5px;
         }
         .input-area button {
-            padding: 5px 10px;
+            font-family: "Poppins", sans-serif;
+            font-size: 14px; 
+            font-weight: 600; 
+            padding: 5px 10px; 
+            width: 70px; 
+            
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            color: #9d8189; 
+            border: 2px solid #9d8189;
+            border-radius: 8px; 
+            
             cursor: pointer;
+            transition: 
+                background-color 0.2s ease-in-out,
+                color 0.2s ease-in-out,
+                transform 0.1s ease-in-out,
+                box-shadow 0.2s ease-in-out;
+        }
+
+        /* Hover effect */
+        .input-area button:hover {
+            color: #fbb757;
+            background-color: white;
+            transform: scale(1.05);
+            transition: transform 0.2s ease-in-out;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
+        }
+
+        /* Click (active) effect */
+        .input-area button:active {
+            transform: scale(0.95); /* Press effect */
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15); /* Slightly pressed shadow */
         }
 
         .controls {
@@ -210,6 +244,7 @@
             display: flex;
             flex-direction: column;
             margin-top: 20px; /* Adds space between categories and wardrobe box */
+            position: relative;
         }
         .wardrobe-box.expanded {
             max-height: 600px; /* Expanded height */
@@ -219,6 +254,7 @@
             display: flex;
             justify-content: space-between; /* Align buttons to the right of the header */
             align-items: left;
+            position: relative;
             margin-bottom: 10px; /* Space between header and items */
         }
         .wardrobe-buttons {
@@ -230,8 +266,9 @@
 
         .wardrobe-box .copy-feedback {
             position: absolute;
-            left: 50%;
-            transform: translateX(-70%);
+            top: 50%; /* Moves to center vertically */
+            left: 50%; /* Moves to center horizontally */
+            transform: translate(-50%, -50%); /* Ensures perfect centering */
             font-size: 16px;
             color: #228B22;
             font-weight: bold;
@@ -344,11 +381,12 @@
     <div id="info-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeInfoDialog()">&times;</span>
-            <h4>How to Use</h4>
+            <h4>Welcome to Wardrobe Manager!</h4>
             <p>Enter item numbers consectively (1,4,5,6)</p>
             <p>OR in shorthand format (1,4+2)</p>
             <p>Click anywhere to copy</p>
-            <p>Add ! before entering items to remove those items</p>
+            <p>To remove items: Add ! before entering items</p>
+            <p>OR toggle between Import and Remove</p>
         </div>
     </div>
     
