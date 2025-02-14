@@ -56,6 +56,8 @@ class Wardrobe {
         for (const key in ClothingType.types) {
             this.wardrobe.set(ClothingType.types[key], new Category(ClothingType.types[key]));
         }
+
+        this.loadWardrobe(); // Restore wardrobe from localStorage
     }
 
     // Returns the Category given a type
@@ -70,7 +72,6 @@ class Wardrobe {
         // Remove ALL leading "!" characters
         let isRemoval = itemsString.startsWith("!");
         let cleanedInput = isRemoval ? itemsString.replace(/^!+/, "").trim() : itemsString;
-
         let items = this.parseItems(cleanedInput);
     
         if (isRemoval) {
@@ -79,9 +80,35 @@ class Wardrobe {
             this.wardrobe.get(type).addItems(items);
         }
     
+        this.saveWardrobe();
         this.render();
     }
     
+    saveWardrobe() {
+        let wardrobeData = {};
+
+        this.wardrobe.forEach((category, type) => {
+            wardrobeData[type] = [...category.items]; // Convert set to Array
+        });
+
+        localStorage.setItem("wardrobeData", JSON.stringify(wardrobeData));
+    }
+
+    loadWardrobe() {
+        let savedData = localStorage.getItem("wardrobeData");
+        if (!savedData) return; // If no saved wardrobe, do nothing
+
+        let wardrobeData = JSON.parse(savedData);
+        Object.keys(wardrobeData).forEach(type => {
+            let category = this.getCategory(type);
+            if (category){
+                category.addItems(wardrobeData[type]);
+            }
+        });
+
+        this.render();
+    }
+
     // Parses through a string of clothing items, accepting the x+n format
     parseItems(itemsString) {
         let list = [];
@@ -220,12 +247,11 @@ class Wardrobe {
     
                 if (categoryType) {
                     this.getCategory(categoryType).addItems(itemsList);
-                } else {
-                    console.warn(`Unrecognized category: ${typeName}`);
                 }
             }
         });
-    
+
+        this.saveWardrobe(); // Save after loading new wardrobe    
         this.render();
     }
     
