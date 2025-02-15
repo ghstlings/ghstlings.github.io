@@ -1,7 +1,7 @@
 // ✅ Reset only the import toggle states BEFORE initializing the UI
 (function resetImportModes() {
-    let keysToRemove = Object.keys(localStorage).filter(key => key.startsWith("importMode-"));
-    keysToRemove.forEach(key => localStorage.removeItem(key));
+    let keysToRemove = Object.keys(sessionStorage).filter(key => key.startsWith("importMode-"));
+    keysToRemove.forEach(key => sessionStorage.removeItem(key));
 })();
 
 
@@ -57,7 +57,7 @@ class Wardrobe {
             this.wardrobe.set(ClothingType.types[key], new Category(ClothingType.types[key]));
         }
 
-        this.loadWardrobe(); // Restore wardrobe from localStorage
+        this.loadWardrobe(); // Restore wardrobe from sessionStorage
     }
 
     // Returns the Category given a type
@@ -91,11 +91,11 @@ class Wardrobe {
             wardrobeData[type] = [...category.items]; // Convert set to Array
         });
 
-        localStorage.setItem("wardrobeData", JSON.stringify(wardrobeData));
+        sessionStorage.setItem("wardrobeData", JSON.stringify(wardrobeData));
     }
 
     loadWardrobe() {
-        let savedData = localStorage.getItem("wardrobeData");
+        let savedData = sessionStorage.getItem("wardrobeData");
         if (!savedData) return; // If no saved wardrobe, do nothing
 
         let wardrobeData = JSON.parse(savedData);
@@ -395,11 +395,11 @@ class Wardrobe {
             // }
 
             if (importButton) {
-                // Generate a unique key for each category in localStorage
+                // Generate a unique key for each category in sessionStorage
                 let storageKey = `importMode-${type}`;
                 
                 // Retrieve the stored mode for this specific category, default to "import"
-                let storedState = localStorage.getItem(storageKey) || "import";
+                let storedState = sessionStorage.getItem(storageKey) || "import";
                 isRemove = storedState === "remove";
             
                 importButton.textContent = isRemove ? "Remove" : "Import";
@@ -408,7 +408,7 @@ class Wardrobe {
             
                 importButton.onclick = () => {
                     isRemove = !isRemove; // Toggle mode
-                    localStorage.setItem(storageKey, isRemove ? "remove" : "import"); // Save state for this category
+                    sessionStorage.setItem(storageKey, isRemove ? "remove" : "import"); // Save state for this category
             
                     let inputId = input.id;
             
