@@ -5,360 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wardrobe Manager</title>
     <input type="file" id="fileInput" style="display: none;" onchange="myWardrobe.handleFileUpload(event)">
+    <link rel="stylesheet" href="styles.css">
+
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: "Roboto", serif;
-            background-color: #ffe5e7; /* Page background color */
-            margin: 20px;
-        }
-
-        .copy-icon {
-            font-size: 20px;
-            color: #b5485d;
-            cursor: pointer;
-            margin-right: 5px; /* Space between icons */
-        }
-
-        .expand-icon {
-            font-size: 20px;
-            color: #333;
-            cursor: pointer;
-        }
-
-        .copy-icon:hover,
-        .expand-icon:hover {
-            color: #ff5733; /* Hover effect */
-        }
-
-        .category-box {
-            border: 2px solid #9d8189;
-            border-radius: 20px;
-            background-color: #ffc6ca; /* category box background color */
-            padding-top: 10px;
-            padding-left: 10px;
-            padding-right: 10px;
-            width: 300px;
-            min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-        }
-        
-        .items {
-            min-height: 50px;
-            border: 1px solid #ccc;
-            padding: 5px;
-            background: #f9f9f9;
-            overflow-y: auto;
-            height: 50px;
-            cursor: pointer;
-            /* position: relative;
-            overflow: visible; */
-        }
-
-        .copy-feedback {
-            font-size: 16px;
-            color: #228B22;
-            font-weight: bold;
-            display: none; /* Hidden until copied */
-            position: absolute;
-            left: 10px;
-        }
-
-        .copy-feedback i {
-            margin-right: 2px; 
-        }
-
-        .input-area {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        .input-area input {
-            flex: 1;
-            padding: 5px;
-            margin-right: 5px;
-        }
-        .input-area button {
-            font-family: "Poppins", sans-serif;
-            font-size: 14px; 
-            font-weight: 600; 
-            padding: 5px 10px; 
-            width: 70px; 
-            
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            
-            color: #9d8189; 
-            border: 2px solid #9d8189;
-            border-radius: 8px; 
-            
-            cursor: pointer;
-            transition: 
-                background-color 0.2s ease-in-out,
-                color 0.2s ease-in-out,
-                /* border-color 0.2s ease-in-out, */
-                transform 0.1s ease-in-out,
-                box-shadow 0.2s ease-in-out;
-        }
-
-        /* Hover effect */
-        .input-area button:hover {
-            color: #009EB3 !important; 
-            /* border-color: #fbb757 !important;  */
-            background-color: whitesmoke !important;
-            transform: scale(1.05);
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
-            transition: all 0.2s ease-in-out;
-        }
-
-        /* Click (active) effect */
-        .input-area button:active {
-            transform: scale(0.95); /* Press effect */
-            transform: 0.5s ease-in-out;
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15); /* Slightly pressed shadow */
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between; 
-            align-items: center;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between; 
-            align-items: center;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        .category-header {
-            display: flex;
-            align-items: center;
-            justify-content: center; 
-            position: relative;
-            padding: 10px 10px;
-            padding-bottom: 20px;
-        }
-        .category-title {
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s ease-in-out;
-            position: absolute;
-            left: 50%;
-            white-space: nowrap;
-            transform: translateX(-50%);
-            flex: 1;
-        }
-
-        .category-title:hover {
-            color: #b5485d;
-            transition: color 0.2s ease-in-out;
-        }
-
-        /* Override alignment for the Wardrobe Box */
-        .wardrobe-box .category-title {
-            text-align: left;
-            position: static; /* no absolute centering */
-            transform: none; /* don't translateX */
-        }
-
-        .wwardrobe-box .category-header {
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .wardrobe-box .wardrobe-buttons {
-            display: flex;
-            gap: 10px;
-            margin-left: auto;
-        }
-
-        .header h1 {
-            margin: 0; /* Remove extra margin for alignment */
-        }
-
-        .external-link {
-            font-size: 20px; 
-            color: #333;
-            text-decoration: none;
-            position: absolute;
-            right: 0px; 
-            bottom: 1px;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 10px; /* Adds spacing between buttons */
-            min-height: 30px;
-        }
-
-        .item-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: absolute;
-            top: 5px;
-            right: 10px;
-        }
-        .item-count {
-            font-size: 16px;
-            font-weight: bold;
-            color: #b5485d;
-            padding: 2px 6px;
-            position: absolute;
-            right: 10px;
-            /* border-radius: 10px; */
-            /* background: #fff0f2;  */
-        }
-
-        .total-count {
-            font-size: 18px;
-            font-weight: bold;
-            margin-left: 20px;
-        }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px; /* Adds spacing between the wardrobe box and item boxes */
-            margin-bottom: 20px; /* Space below category boxes */
-        }
-        .wardrobe-box {
-            border: 2px solid #9d8189;
-            background-color: #ffc6ca; /* wardrobe box background color */
-            padding: 10px;
-            width: 100%;
-            max-width: 645px;
-            min-height: 100px;
-            max-height: 300px; /* Default collapsed height */
-            overflow: hidden; /* Collapsed by default */
-            transition: max-height 0.3s ease-in-out, border 0.3s ease-in-out;
-            white-space: pre-wrap; /* Wrap text properly */
-            word-wrap: break-word; /* Ensure long text wraps */
-            display: flex;
-            flex-direction: column;
-            margin-top: 20px; /* Adds space between categories and wardrobe box */
-            position: relative;
-        }
-        .wardrobe-box.expanded {
-            max-height: 600px; /* Expanded height */
-            overflow-y: auto; /* Enable scrolling when expanded */
-        }
-        .wardrobe-header {
-            display: flex;
-            justify-content: space-between; /* Align buttons to the right of the header */
-            align-items: left;
-            position: relative;
-            margin-bottom: 10px; /* Space between header and items */
-        }
-        .wardrobe-buttons {
-            display: flex;
-            gap: 15px; 
-            align-items: center; 
-            justify-content: flex-end; /* Align icons to the right */
-        }
-
-        .wardrobe-box .copy-feedback {
-            position: absolute;
-            top: 50%; /* Moves to center vertically */
-            left: 50%; /* Moves to center horizontally */
-            transform: translate(-50%, -50%); /* Ensures perfect centering */
-            font-size: 16px;
-            color: #228B22;
-            font-weight: bold;
-            display: none;
-        }
-
-        /* Category Item Boxes */
-        .category-box .items {
-            border: 1px solid #9d8189;
-            padding: 5px; /* Prevent text from touching the edges */
-            background-color: #fff0f2;
-            overflow-y: auto; /* Enable scrolling if content exceeds height */
-            max-height: 100px; 
-            word-wrap: break-word; /* Wrap long words */
-            font-family: "JetBrains Mono", serif;
-            font-size: 14px;
-        }
-        /* Wardrobe Box */
-        .wardrobe-items {
-            flex-grow: 1;
-            overflow-y: auto; /* Enable scrolling */
-            background-color: #ffffff;
-            padding: 5px;
-            min-height: 15px;
-            word-wrap: break-word;
-            font-family: "JetBrains Mono", serif;
-            font-size: 14px;
-        }
-
-        /* Info Icon */
-        .info-icon {
-            font-size: 17px;
-            margin-left: 10px;
-            cursor: pointer;
-            color: #b5485d;
-            position: relative;
-            top: -4px;
-        }
-
-        .info-icon:hover {
-            color: #ff5733;
-            transform: scale(1.1);
-            transition: transform 0.1s ease-in-out;
-        }
-
-        /* Modal Background */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        /* Modal Content */
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding-left: 20px;
-            padding-right: 20px;
-            padding-top: 10px;
-            border: 1px solid #888;
-            width: 50%;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Close Button */
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-    </style>
     
     <script>
         window.onload = function () {
@@ -395,13 +49,19 @@
             <p>OR toggle between Import and Remove</p>
         </div>
     </div>
-    
+        
     <!-- Top Row containing Import & Export Buttons, and Total Item Count -->
     <div class="controls">
         <div class="buttons">
             <button onclick="myWardrobe.importWardrobe()">Import Wardrobe</button>
             <button onclick="myWardrobe.exportWardrobe()">Export Wardrobe</button>
         </div>
+        <p id="remove-mode">Remove Mode</p>
+        <label class="toggle-switch">
+            <input type="checkbox" />
+            <span class="slider"></span>
+        </label>
+
         <span class="total-count" id="total-count">0 Items</span>
     </div>    
 
@@ -414,7 +74,7 @@
             <span class="copy-feedback"><i class="fas fa-check"></i> Copied!</span>
             <div class="category-title"></div>
             <div class="item-count"></div>
-        </div>
+        </div>  
         <div class="items"></div>
         <div class="input-area">
             <input type="text" placeholder="Enter items">

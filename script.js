@@ -1,9 +1,10 @@
-// ✅ Reset only the import toggle states BEFORE initializing the UI
-(function resetImportModes() {
-    let keysToRemove = Object.keys(sessionStorage).filter(key => key.startsWith("importMode-"));
-    keysToRemove.forEach(key => sessionStorage.removeItem(key));
-})();
-
+/* TO-DO
+1. CHANGE IMPORT BUTTON TO ACTUALLY IMPORT. GREEN HIGHLIGHT WHEN HOVERED OVER
+2. ADD A REMOVE MODE TOGGLE AT THE TOP CENTER OF THE PAGE WHICH TOGGLES THE BUTTON BETWEEN REMOVE AND IMPORT
+3. ADD A CLEAR ALL BUTTON, THE UNDO AND REDO BUTTONS
+4. CHANGE INPUT BOX ACTIVE HIGHLIGHT TO PINK
+5. FIGURE OUT HOW TO MAKE THE WEBSITE ZOOM IN ON PHONE, AND MAKE PRESSING RETURN WORK
+*/
 
 class ClothingType {
     static types = {
@@ -315,13 +316,14 @@ class Wardrobe {
         // Store the ID of the currently focused input field
         let lastFocusedInputId = document.activeElement ? document.activeElement.id : null;
 
+        const removeToggle = document.querySelector(".toggle-switch input");
+        let isRemove = removeToggle.checked;
+
+        console.log("rendor: " + isRemove);
+
         // Configures each Category Box
         this.wardrobe.forEach((category, type) => {
             const template = document.querySelector(".category-box");
-            if (!template) {
-                console.error("Template for .category-box not found");
-                return;
-            }
             
             // Each Category Box follows the same template format
             const categoryBox = template.cloneNode(true);
@@ -362,66 +364,28 @@ class Wardrobe {
                     this.copyTextToClipboard(itemsDiv.textContent.trim(), copyFeedback); // Uses displayed text
                 };
             }
-
             container.appendChild(categoryBox);
 
             // Configure the input box and allows pressing Enter to import
             const input = categoryBox.querySelector("input");
             const importButton = categoryBox.querySelector("button");
 
-            let isRemove = false; // Tracks toggle state
-
-            // Handles directly clicking the Import button
-            // if (importButton) {
-            //     importButton.textContent = "Import"; // Default mode is "Import"
-
-            //     importButton.onclick = () => {
-            //         isRemove = !isRemove; // Toggle mode
-            //         let inputId = input.id;
-                    
-            //         if (isRemove){
-            //             importButton.textContent = "Remove";
-            //             importButton.style.color = "#b5485d";
-            //             importButton.style.borderColor = "#b5485d";
-            //         } else {
-            //             importButton.textContent = "Import";
-            //             importButton.style.color = "";
-            //             importButton.style.borderColor = "#9d8189";
-                        
-            //         }
-
-            //         setTimeout(() => { document.getElementById(inputId).focus(); }, 0);
-            //     };
-            // }
-
             if (importButton) {
-                // Generate a unique key for each category in sessionStorage
-                let storageKey = `importMode-${type}`;
-                
-                // Retrieve the stored mode for this specific category, default to "import"
-                let storedState = sessionStorage.getItem(storageKey) || "import";
-                isRemove = storedState === "remove";
-            
                 importButton.textContent = isRemove ? "Remove" : "Import";
                 importButton.style.color = isRemove ? "#b5485d" : "";
                 importButton.style.borderColor = isRemove ? "#b5485d" : "#9d8189";
             
                 importButton.onclick = () => {
-                    isRemove = !isRemove; // Toggle mode
-                    sessionStorage.setItem(storageKey, isRemove ? "remove" : "import"); // Save state for this category
-            
                     let inputId = input.id;
-            
+
+                    console.log("click import: " + isRemove);
+
                     if (isRemove) {
-                        importButton.textContent = "Remove";
-                        importButton.style.color = "#b5485d";
-                        importButton.style.borderColor = "#b5485d";
+                        this.addClothingItems(type, "!" + input.value);
                     } else {
-                        importButton.textContent = "Import";
-                        importButton.style.color = "";
-                        importButton.style.borderColor = "#9d8189";
+                        this.addClothingItems(type, input.value);
                     }
-            
+
                     setTimeout(() => {
                         let inputElement = document.getElementById(inputId);
                         if (inputElement) inputElement.focus();
@@ -429,6 +393,21 @@ class Wardrobe {
                 };
             }
             
+            document.addEventListener("DOMContentLoaded", function () {
+                // Select the toggle input
+                const removeToggle = document.querySelector(".toggle-switch input");
+                console.log("before pressing toggle: " + isRemove);
+                // Add event listener for change
+                removeToggle.addEventListener("change", function () {
+                    isRemove = this.checked; // Check if toggle is on
+                    console.log("toggle pressed: " + isRemove);
+                    document.querySelectorAll(".category-box button").forEach(button => {
+                        button.textContent = isRemove ? "Remove" : "Import";
+                        button.style.color = isRemove ? "#b5485d" : "";
+                        button.style.borderColor = isRemove ? "#b5485d" : "#9d8189";
+                    });
+                });
+            });
 
             if (input) {
                 input.id = `input-${type}`; // Assign unique ID per category
@@ -438,6 +417,7 @@ class Wardrobe {
                     if (event.key === "Enter") {
                         event.preventDefault();
                         
+                        console.log("pressing enter: " + isRemove);
                         if (isRemove) {
                             this.addClothingItems(type, "!" + input.value); // Remove items
                         } else {
