@@ -319,8 +319,6 @@ class Wardrobe {
         const removeToggle = document.querySelector(".toggle-switch input");
         let isRemove = removeToggle.checked;
 
-        console.log("rendor: " + isRemove);
-
         // Configures each Category Box
         this.wardrobe.forEach((category, type) => {
             const template = document.querySelector(".category-box");
@@ -378,8 +376,8 @@ class Wardrobe {
                 importButton.onclick = () => {
                     let inputId = input.id;
 
-                    console.log("click import: " + isRemove);
-
+                    isRemove = removeToggle.checked;
+                    
                     if (isRemove) {
                         this.addClothingItems(type, "!" + input.value);
                     } else {
@@ -396,11 +394,11 @@ class Wardrobe {
             document.addEventListener("DOMContentLoaded", function () {
                 // Select the toggle input
                 const removeToggle = document.querySelector(".toggle-switch input");
-                console.log("before pressing toggle: " + isRemove);
+        
                 // Add event listener for change
                 removeToggle.addEventListener("change", function () {
                     isRemove = this.checked; // Check if toggle is on
-                    console.log("toggle pressed: " + isRemove);
+                    
                     document.querySelectorAll(".category-box button").forEach(button => {
                         button.textContent = isRemove ? "Remove" : "Import";
                         button.style.color = isRemove ? "#b5485d" : "";
@@ -417,7 +415,8 @@ class Wardrobe {
                     if (event.key === "Enter") {
                         event.preventDefault();
                         
-                        console.log("pressing enter: " + isRemove);
+                        isRemove = removeToggle.checked;
+
                         if (isRemove) {
                             this.addClothingItems(type, "!" + input.value); // Remove items
                         } else {
