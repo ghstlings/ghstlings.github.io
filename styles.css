@@ -99,7 +99,7 @@ body {
 
 /* Hover effect */
 .input-area button:hover {
-    color: #009EB3 !important; 
+    color: #b5485d !important; 
     /* border-color: #fbb757 !important;  */
     background-color: whitesmoke !important;
     transform: scale(1.05);
@@ -177,11 +177,7 @@ body {
     bottom: 1px;
 }
 
-.buttons {
-    display: flex;  
-    gap: 10px; /* Adds spacing between buttons */
-    min-height: 30px;
-}
+
 
 .item-container {
     display: flex;
@@ -384,16 +380,76 @@ body {
     transform: translateX(26px);
 }
 
-.controls #remove-mode {
-    font-family: "Poppins", sans-serif;
-    font-size: 14px; 
-    font-weight: 600; 
-}
-
+/* Add space between header and controls */
 .controls {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
+    flex-wrap: nowrap; /* Prevents wrapping */
     margin-bottom: 20px;
+    margin-top: 25px; /* Increased space above controls */
     position: relative;
+    text-align: center;
+    width: 100%;
+    gap: 20px; /* Provides even spacing */
+}
+
+/* Each group (undo/redo, remove toggle, copy, manage icons) */
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Adds spacing between icons */
+    flex: 1; /* Ensures equal spacing between sections */
+    justify-content: center;
+    flex-direction: row; /* Ensures icons stay in a row */
+    position: relative;
+    padding-top: 25px; /* Adds space between label and icons */
+}
+
+/* Center the middle sections properly */
+.center-group {
+    display: flex;
+    flex-direction: column; /* Stack label and toggle switch */
+    align-items: center; /* Center-align both elements */
+    justify-content: center;
+}
+
+/* Labels above each section */
+.control-label {
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #555;
+    white-space: nowrap; /* Prevents text from wrapping */
+    text-align: center; /* Ensures labels are centered above elements */
+    position: absolute;
+    top: 0; /* Ensures labels stay above icons */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.center-group .control-label {
+    width: auto; /* Prevents stretching */
+    text-align: center; /* Ensures text is centered */
+    margin-bottom: 5px; /* Adds spacing between label and toggle */
+}
+/* Icon button styling */
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+    transition: color 0.3s ease-in-out;
+}
+
+.icon-btn:hover {
+    color: #b5485d; /* Highlight color on hover */
+}
+
+/* Ensures remove mode label is consistent */
+.controls #remove-mode {
+    font-family: "Poppins", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
 }
